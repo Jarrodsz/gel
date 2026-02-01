@@ -54,7 +54,19 @@ class OrderedSet[K: Hashable](MutableSet[K]):
     def replace(self, existing: K, new: K) -> None:
         if existing not in self.map:
             raise LookupError(f'{existing!r} is not in set')
-        self.map[existing] = None
+        if existing == new:
+            return
+
+        new_map: dict[K, None] = {}
+        for key in self.map:
+            if key == existing:
+                new_map[new] = None
+            elif key == new:
+                continue
+            else:
+                new_map[key] = None
+
+        self.map = new_map
 
     difference_update = collections.abc.MutableSet.__isub__
     symmetric_difference_update = collections.abc.MutableSet.__ixor__
